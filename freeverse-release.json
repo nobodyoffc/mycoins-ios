@@ -1,0 +1,36 @@
+{
+  "github": "nobodyoffc/mycoins-ios",
+  "codes": [
+    {
+      "name": "MyCoinsForIOS",
+      "path": ".",
+      "langs": [
+        "TypeScript",
+        "Swift"
+      ],
+      "desc": "MyCoins for iOS: a multi-coin wallet for FCH, BTC, BCH, DOGE, ETH and ERC-20 tokens.",
+      "protocols": [
+        "FAPI0"
+      ]
+    }
+  ],
+  "apps": [
+    {
+      "stdName": "MyCoinsForIOS",
+      "os": "ios",
+      "types": [
+        "wallet"
+      ],
+      "localNames": {
+        "en": "MyCoins for iOS"
+      },
+      "desc": "MyCoins for iOS: a multi-coin wallet for FCH, BTC, BCH, DOGE, ETH and ERC-20 tokens.",
+      "codes": [
+        "MyCoinsForIOS"
+      ],
+      "protocols": [
+        "FAPI0"
+      ]
+    }
+  ]
+}

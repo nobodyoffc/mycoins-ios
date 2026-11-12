@@ -1,0 +1,287 @@
+import React, {useEffect} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {useAccountStore} from '../store/account-store';
+import {KeystoreManager} from '../account/keystore';
+import {FileSystemStorage} from '../account/fs-storage';
+import {initializeProviders} from '../api/api-registry';
+import {useSettingsStore} from '../store/settings-store';
+import {CoinType} from '../coins/types';
+import {navigationRef} from './navigationRef';
+
+const DEFAULT_FCH_API = 'https://freecash.info/APIP';
+
+// Screens
+import {LoginScreen} from '../screens/LoginScreen';
+import {CreateAccountScreen} from '../screens/CreateAccountScreen';
+import {KeyListScreen} from '../screens/KeyListScreen';
+import {AddKeyScreen} from '../screens/AddKeyScreen';
+import {DashboardScreen} from '../screens/DashboardScreen';
+import {CoinDetailScreen} from '../screens/CoinDetailScreen';
+import {SendScreen} from '../screens/SendScreen';
+import {ReceiveScreen} from '../screens/ReceiveScreen';
+import {TxDetailScreen} from '../screens/TxDetailScreen';
+import {SettingsScreen} from '../screens/SettingsScreen';
+import {SwapListScreen} from '../screens/SwapListScreen';
+import {SwapDetailScreen} from '../screens/SwapDetailScreen';
+
+import {BackHandler, Platform} from 'react-native';
+import {colors} from '../utils/theme';
+import {CoinsIcon, SwapIcon, SettingsIcon, BackIcon} from '../components/TabIcons';
+import {useT} from '../i18n';
+
+const AuthStack = createNativeStackNavigator();
+const WalletStack = createNativeStackNavigator();
+const KeysStack = createNativeStackNavigator();
+const SwapStack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+/**
+ * Header for a pushed screen. Android puts the title at the left, beside the
+ * arrow. iOS centres it, where the floating FID chip covers its end, and
+ * labels the arrow with the previous route's name ("Dashboard", "KeyList").
+ * So on iOS the title is given to the back button instead: "‹ Send".
+ */
+function pushedHeader(title: string) {
+  return Platform.OS === 'ios'
+    ? {title, headerTitle: '', headerBackTitle: title}
+    : {title};
+}
+
+function WalletNavigator() {
+  const t = useT();
+  return (
+    <WalletStack.Navigator
+      screenOptions={{
+        headerStyle: {backgroundColor: colors.surface},
+        headerTintColor: colors.text,
+      }}>
+      <WalletStack.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+        options={{headerShown: false}}
+      />
+      <WalletStack.Screen
+        name="CoinDetail"
+        component={CoinDetailScreen}
+        options={({route}: any) =>
+          pushedHeader(route.params?.coin || t('nav.coin'))
+        }
+      />
+      <WalletStack.Screen
+        name="Send"
+        component={SendScreen}
+        options={pushedHeader(t('nav.send'))}
+      />
+      <WalletStack.Screen
+        name="Receive"
+        component={ReceiveScreen}
+        options={pushedHeader(t('nav.receive'))}
+      />
+      <WalletStack.Screen
+        name="TxDetail"
+        component={TxDetailScreen}
+        options={pushedHeader(t('nav.transaction'))}
+      />
+    </WalletStack.Navigator>
+  );
+}
+
+function KeysNavigator() {
+  const t = useT();
+  return (
+    <KeysStack.Navigator
+      screenOptions={{
+        headerStyle: {backgroundColor: colors.surface},
+        headerTintColor: colors.text,
+      }}>
+      <KeysStack.Screen
+        name="KeyList"
+        component={KeyListScreen}
+        options={{headerShown: false}}
+      />
+      <KeysStack.Screen
+        name="AddKey"
+        component={AddKeyScreen}
+        options={pushedHeader(t('nav.addKey'))}
+      />
+    </KeysStack.Navigator>
+  );
+}
+
+function SwapNavigator() {
+  const t = useT();
+  return (
+    <SwapStack.Navigator
+      screenOptions={{
+        headerStyle: {backgroundColor: colors.surface},
+        headerTintColor: colors.text,
+      }}>
+      <SwapStack.Screen
+        name="SwapList"
+        component={SwapListScreen}
+        options={{headerShown: false}}
+      />
+      <SwapStack.Screen
+        name="SwapDetail"
+        component={SwapDetailScreen}
+        options={pushedHeader(t('nav.swap'))}
+      />
+    </SwapStack.Navigator>
+  );
+}
+
+// Placeholder for the Back tab — it never renders since tabPress navigates back.
+function BackPlaceholder() {
+  return null;
+}
+
+// The first screen of each tab, keyed by tab name. Settings has no stack, so its
+// tab and screen share a name.
+const TAB_ROOT_SCREENS: Record<string, string> = {
+  KeysTab: 'KeyList',
+  SettingsTab: 'SettingsTab',
+  SwapTab: 'SwapList',
+  WalletTab: 'Dashboard',
+};
+
+function MainTabs() {
+  const t = useT();
+  return (
+    <Tab.Navigator
+      initialRouteName="WalletTab"
+      // Coins is the home tab, so the Android hardware back button returns there
+      // rather than to whichever tab happens to be declared first (KeysTab).
+      backBehavior="initialRoute"
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: {backgroundColor: colors.surface, borderTopColor: colors.border},
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textLight,
+      }}>
+      {/* Keys is reachable by tapping the avatar/FID, so it's hidden from the tab bar. */}
+      <Tab.Screen
+        name="KeysTab"
+        component={KeysNavigator}
+        options={{tabBarItemStyle: {display: 'none'}}}
+      />
+      <Tab.Screen
+        name="SettingsTab"
+        component={SettingsScreen}
+        options={{
+          tabBarLabel: t('nav.tabSettings'),
+          headerShown: false,
+          tabBarIcon: ({color, size}) => <SettingsIcon color={color} size={size} />,
+        }}
+      />
+      <Tab.Screen
+        name="SwapTab"
+        component={SwapNavigator}
+        options={{
+          tabBarLabel: t('nav.tabSwap'),
+          tabBarIcon: ({color, size}) => <SwapIcon color={color} size={size} />,
+        }}
+      />
+      <Tab.Screen
+        name="WalletTab"
+        component={WalletNavigator}
+        options={{
+          tabBarLabel: t('nav.tabCoins'),
+          tabBarIcon: ({color, size}) => <CoinsIcon color={color} size={size} />,
+        }}
+      />
+      <Tab.Screen
+        name="BackTab"
+        component={BackPlaceholder}
+        options={{
+          tabBarLabel: t('nav.tabBack'),
+          tabBarIcon: ({color, size}) => <BackIcon color={color} size={size} />,
+        }}
+        listeners={{
+          tabPress: e => {
+            e.preventDefault();
+            const rootRoute = navigationRef.getCurrentRoute();
+            const tabState = navigationRef.getRootState();
+            const activeTab = tabState?.routes[tabState.index]?.name;
+            // The Coins page (Dashboard) is the app's home; Back from it
+            // closes the app rather than returning to a previous tab. An iOS
+            // app cannot quit itself, so there Back on the home page does nothing.
+            if (activeTab === 'WalletTab' && rootRoute?.name === 'Dashboard') {
+              if (Platform.OS === 'android') {
+                BackHandler.exitApp();
+              }
+              return;
+            }
+            // Tabs are switched to, not pushed, so there is no history entry to
+            // pop once we're on a tab's own first screen — Back there means
+            // "leave this tab", which always returns to Coins.
+            if (
+              activeTab &&
+              activeTab !== 'WalletTab' &&
+              rootRoute?.name === TAB_ROOT_SCREENS[activeTab]
+            ) {
+              navigationRef.navigate('WalletTab' as never);
+              return;
+            }
+            if (navigationRef.canGoBack()) {
+              navigationRef.goBack();
+            }
+          },
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
+
+export function RootNavigator() {
+  const {isLoggedIn, setKeystoreManager} = useAccountStore();
+  const {loadSettings, customApiUrl} = useSettingsStore();
+
+  useEffect(() => {
+    const storage = new FileSystemStorage();
+    const keystoreManager = new KeystoreManager(storage);
+    setKeystoreManager(keystoreManager);
+    loadSettings().then(() => {
+      const settings = useSettingsStore.getState();
+      const btcEndpoint = settings.apiEndpoints[CoinType.BTC];
+      const dogeEndpoint = settings.apiEndpoints[CoinType.DOGE];
+      const bchEndpoint = settings.apiEndpoints[CoinType.BCH];
+      const ethEndpoint = settings.apiEndpoints[CoinType.ETH];
+      // apiProviderTypes is keyed by the lowercase settings group key
+      // ('btc'/'doge'/'bch'), not the CoinType value. The saved baseUrl always
+      // matches the saved provider type, so initializeProviders can pick the
+      // right class and URL together.
+      initializeProviders({
+        fchBaseUrl: settings.customApiUrl || DEFAULT_FCH_API,
+        btcProviderType: settings.apiProviderTypes.btc,
+        btcBaseUrl: btcEndpoint?.baseUrl,
+        btcApiKey: btcEndpoint?.apiKey,
+        dogeProviderType: settings.apiProviderTypes.doge,
+        dogeBaseUrl: dogeEndpoint?.baseUrl,
+        dogeApiKey: dogeEndpoint?.apiKey,
+        bchProviderType: settings.apiProviderTypes.bch,
+        bchBaseUrl: bchEndpoint?.baseUrl,
+        bchApiKey: bchEndpoint?.apiKey,
+        ethRpcUrl: ethEndpoint?.baseUrl,
+        etherscanApiKey: ethEndpoint?.apiKey,
+      });
+    });
+  }, []);
+
+  return (
+    <NavigationContainer ref={navigationRef}>
+      {isLoggedIn ? (
+        <MainTabs />
+      ) : (
+        <AuthStack.Navigator screenOptions={{headerShown: false}}>
+          <AuthStack.Screen name="Login" component={LoginScreen} />
+          <AuthStack.Screen
+            name="CreateAccount"
+            component={CreateAccountScreen}
+          />
+        </AuthStack.Navigator>
+      )}
+    </NavigationContainer>
+  );
+}
