@@ -1,6 +1,26 @@
+import {NativeModules} from 'react-native';
 import {argon2idAsync} from './vendor/noble-argon2.js';
 import {sha256} from './hash';
-import {utf8ToBytes} from './encoding';
+import {bytesToHex, hexToBytes, utf8ToBytes} from './encoding';
+
+/**
+ * The reference C Argon2, when the app carries it (ios/MyCoins/MCArgon2.m).
+ * Hermes runs the JavaScript one without a JIT: at these parameters it took
+ * about a minute on an iPhone 16, against about a second natively. Both give
+ * the same bytes — tools/check-argon2.sh compares them.
+ */
+const nativeArgon2:
+  | {
+      argon2id(
+        passwordHex: string,
+        saltHex: string,
+        iterations: number,
+        memoryKiB: number,
+        parallelism: number,
+        length: number,
+      ): Promise<string>;
+    }
+  | undefined = NativeModules.MCArgon2;
 
 /**
  * Key derivation functions available when turning a secret phrase into a prikey.
@@ -26,7 +46,7 @@ export const DERIVED_KEY_LEN = 32;
  * phrase alone and keeps it compatible with Safe/Freer, which derive with
  * `Kdf.Argon2id_No1_NrC7` and `new byte[0]`.
  *
- * Argon2id is deliberately slow (a few seconds on a phone). `onProgress` reports
+ * In JavaScript Argon2id is slow (seconds on Android). `onProgress` reports
  * completion in the 0..1 range so callers can show a progress indicator; the
  * derivation yields to the event loop between chunks, so the UI stays responsive.
  */
@@ -34,6 +54,20 @@ export async function deriveKeyArgon2id(
   phrase: string,
   onProgress?: (progress: number) => void,
 ): Promise<Uint8Array> {
+  if (nativeArgon2) {
+    // One call with nothing to report in between; it is over before a
+    // progress bar would have moved.
+    const hex = await nativeArgon2.argon2id(
+      bytesToHex(utf8ToBytes(phrase)),
+      '',
+      ARGON2ID_ITERATIONS,
+      ARGON2ID_MEMORY_KIB,
+      ARGON2ID_PARALLELISM,
+      DERIVED_KEY_LEN,
+    );
+    onProgress?.(1);
+    return hexToBytes(hex);
+  }
   return argon2idAsync(utf8ToBytes(phrase), new Uint8Array(0), {
     t: ARGON2ID_ITERATIONS,
     m: ARGON2ID_MEMORY_KIB,

@@ -22,8 +22,16 @@ with the `android/` folder dropped and the `ios/` target finished.
 
 ## What differs from Android
 
-- The Back tab on the Coins page does nothing: an iOS app cannot quit itself
-  (`RootNavigator.tsx`).
+- The Back tab on the Coins page locks the wallet and returns to the login
+  screen, as auto-lock does. Android closes the app there; an iOS app cannot
+  quit itself (`RootNavigator.tsx`).
+- Argon2id runs natively (`ios/MyCoins/MCArgon2.m` over the reference C in
+  `ios/MyCoins/Argon2`, the copy Freer for Mac vendors, empty salt allowed).
+  The JavaScript one took about a minute on an iPhone 16; this takes about a
+  second. `src/crypto/kdf.ts` uses it when it is there and falls back to
+  JavaScript, which is what jest runs. `tools/check-argon2.sh` compares the
+  two on the Mac, and the `testSecretKey` UI test checks a phrase's FID in
+  the app. Run both after touching either.
 - Every form is a `ScrollView` with `automaticallyAdjustKeyboardInsets`, and
   the Send password dialog sits in a `KeyboardAvoidingView`. Android resizes
   the window for the keyboard on its own; iOS does not. A new screen with a
@@ -58,7 +66,7 @@ with the `android/` folder dropped and the `ios/` target finished.
 For each file changed on Android since the recorded commit, three-way merge
 with `git merge-file` (ours = the file here, base = the Android file at the
 recorded commit, theirs = the Android file at the new commit), keep this side
-of conflicts around the keyboard and the Back tab, then update
+of conflicts around the keyboard, the Back tab and `kdf.ts`, then update
 `Config/android-source-revision.txt`. If `package.json` gained a native
 module, run `pod install` and build before anything else.
 

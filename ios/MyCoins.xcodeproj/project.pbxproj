@@ -12,9 +12,16 @@
 		0FED870EF9B7176A3B6224DA /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		20CB84C0C9763C8AD992C424 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ED98982A7A21278134DD5A0A /* InfoPlist.strings */; };
+		46F7FE60EB723D1BC97E4231 /* core.c in Sources */ = {isa = PBXBuildFile; fileRef = F550D6A811483C2AF4BAE938 /* core.c */; };
+		639E2620C5D1BFD8E06A6F62 /* argon2.c in Sources */ = {isa = PBXBuildFile; fileRef = E7F0EFC0719E2EAF5AA80138 /* argon2.c */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		77AE487414B6F6990B8BDF7B /* WalkthroughTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC5A9FA6AC4689F97C9B4E1 /* WalkthroughTests.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		AA8632F8C5F2798BC9126DCE /* thread.c in Sources */ = {isa = PBXBuildFile; fileRef = A8D3B99647430B068FA69B60 /* thread.c */; };
+		AC44D4180946F7FBCE69F142 /* encoding.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E30397448918B35CED5F86A /* encoding.c */; };
+		B67A7316357B5CF86904E3AE /* blake2b.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BF66DA8C68005365D69B63D /* blake2b.c */; };
+		D8FB63D79809753AFDCA3330 /* MCArgon2.m in Sources */ = {isa = PBXBuildFile; fileRef = 88149AD5435C3230BDBAEB38 /* MCArgon2.m */; };
+		F811C10F88FEB2FE4E2F0724 /* ref.c in Sources */ = {isa = PBXBuildFile; fileRef = A053A16F7C522E58771D65EA /* ref.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,16 +39,32 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MyCoins/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MyCoins/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = MyCoins/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		15C2372A382418E4FE9D9C0A /* blake2.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = blake2.h; path = MyCoins/Argon2/blake2/blake2.h; sourceTree = "<group>"; };
+		31FE5416658AF8008255CD9D /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = MyCoins/Argon2/LICENSE; sourceTree = "<group>"; };
+		337F874F6DAEF465EBC5E3D3 /* blamka-round-ref.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "blamka-round-ref.h"; path = "MyCoins/Argon2/blake2/blamka-round-ref.h"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-MyCoins.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyCoins.debug.xcconfig"; path = "Target Support Files/Pods-MyCoins/Pods-MyCoins.debug.xcconfig"; sourceTree = "<group>"; };
+		494BADCB5962D7D84EB57F97 /* thread.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = thread.h; path = MyCoins/Argon2/thread.h; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-MyCoins.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyCoins.release.xcconfig"; path = "Target Support Files/Pods-MyCoins/Pods-MyCoins.release.xcconfig"; sourceTree = "<group>"; };
 		5B11090460EE96A9F9BA4C44 /* zh-Hans */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "MyCoins/zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-MyCoins.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MyCoins.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		63060D2E0FFBC5DF2BAD1058 /* blake2-impl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "blake2-impl.h"; path = "MyCoins/Argon2/blake2/blake2-impl.h"; sourceTree = "<group>"; };
+		713F50E04CC1F10E5E0DD7D0 /* UPSTREAM.md */ = {isa = PBXFileReference; includeInIndex = 1; name = UPSTREAM.md; path = MyCoins/Argon2/UPSTREAM.md; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = MyCoins/AppDelegate.swift; sourceTree = "<group>"; };
 		7B09C09F20865298B314732D /* en */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = en; path = MyCoins/en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		7BF66DA8C68005365D69B63D /* blake2b.c */ = {isa = PBXFileReference; includeInIndex = 1; name = blake2b.c; path = MyCoins/Argon2/blake2/blake2b.c; sourceTree = "<group>"; };
+		7E30397448918B35CED5F86A /* encoding.c */ = {isa = PBXFileReference; includeInIndex = 1; name = encoding.c; path = MyCoins/Argon2/encoding.c; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = MyCoins/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		88149AD5435C3230BDBAEB38 /* MCArgon2.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MCArgon2.m; path = MyCoins/MCArgon2.m; sourceTree = "<group>"; };
+		A053A16F7C522E58771D65EA /* ref.c */ = {isa = PBXFileReference; includeInIndex = 1; name = ref.c; path = MyCoins/Argon2/ref.c; sourceTree = "<group>"; };
 		A4F6330AC756BA4FBD8D640E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		A814A66AC9D0DFABFEB8116B /* MyCoinsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyCoinsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8D3B99647430B068FA69B60 /* thread.c */ = {isa = PBXFileReference; includeInIndex = 1; name = thread.c; path = MyCoins/Argon2/thread.c; sourceTree = "<group>"; };
+		CDC789B1D152C16F45D97758 /* argon2.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = argon2.h; path = MyCoins/Argon2/include/argon2.h; sourceTree = "<group>"; };
+		D48173D2A5BDE76AE35B5CAB /* core.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = core.h; path = MyCoins/Argon2/core.h; sourceTree = "<group>"; };
+		E5577C1138B787B5372D72E6 /* encoding.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = encoding.h; path = MyCoins/Argon2/encoding.h; sourceTree = "<group>"; };
+		E7F0EFC0719E2EAF5AA80138 /* argon2.c */ = {isa = PBXFileReference; includeInIndex = 1; name = argon2.c; path = MyCoins/Argon2/argon2.c; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F550D6A811483C2AF4BAE938 /* core.c */ = {isa = PBXFileReference; includeInIndex = 1; name = core.c; path = MyCoins/Argon2/core.c; sourceTree = "<group>"; };
 		FDC5A9FA6AC4689F97C9B4E1 /* WalkthroughTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WalkthroughTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -74,6 +97,8 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
 				ED98982A7A21278134DD5A0A /* InfoPlist.strings */,
+				88149AD5435C3230BDBAEB38 /* MCArgon2.m */,
+				382246D8CD0ED04A3FB35F84 /* Argon2 */,
 			);
 			name = MyCoins;
 			sourceTree = "<group>";
@@ -86,6 +111,28 @@
 				E39AD08526270FBE9F7FAB1F /* iOS */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		382246D8CD0ED04A3FB35F84 /* Argon2 */ = {
+			isa = PBXGroup;
+			children = (
+				E7F0EFC0719E2EAF5AA80138 /* argon2.c */,
+				F550D6A811483C2AF4BAE938 /* core.c */,
+				7E30397448918B35CED5F86A /* encoding.c */,
+				A053A16F7C522E58771D65EA /* ref.c */,
+				A8D3B99647430B068FA69B60 /* thread.c */,
+				7BF66DA8C68005365D69B63D /* blake2b.c */,
+				D48173D2A5BDE76AE35B5CAB /* core.h */,
+				E5577C1138B787B5372D72E6 /* encoding.h */,
+				494BADCB5962D7D84EB57F97 /* thread.h */,
+				CDC789B1D152C16F45D97758 /* argon2.h */,
+				15C2372A382418E4FE9D9C0A /* blake2.h */,
+				63060D2E0FFBC5DF2BAD1058 /* blake2-impl.h */,
+				337F874F6DAEF465EBC5E3D3 /* blamka-round-ref.h */,
+				713F50E04CC1F10E5E0DD7D0 /* UPSTREAM.md */,
+				31FE5416658AF8008255CD9D /* LICENSE */,
+			);
+			name = Argon2;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -322,6 +369,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
+				D8FB63D79809753AFDCA3330 /* MCArgon2.m in Sources */,
+				639E2620C5D1BFD8E06A6F62 /* argon2.c in Sources */,
+				46F7FE60EB723D1BC97E4231 /* core.c in Sources */,
+				AC44D4180946F7FBCE69F142 /* encoding.c in Sources */,
+				F811C10F88FEB2FE4E2F0724 /* ref.c in Sources */,
+				AA8632F8C5F2798BC9126DCE /* thread.c in Sources */,
+				B67A7316357B5CF86904E3AE /* blake2b.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,6 +421,11 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5768V787GP;
 				ENABLE_BITCODE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/MyCoins/Argon2\"",
+					"\"$(SRCROOT)/MyCoins/Argon2/include\"",
+				);
 				INFOPLIST_FILE = MyCoins/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -398,6 +457,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5768V787GP;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/MyCoins/Argon2\"",
+					"\"$(SRCROOT)/MyCoins/Argon2/include\"",
+				);
 				INFOPLIST_FILE = MyCoins/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (

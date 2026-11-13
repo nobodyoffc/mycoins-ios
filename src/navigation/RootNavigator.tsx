@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useAccountStore} from '../store/account-store';
+import {useWalletStore} from '../store/wallet-store';
 import {KeystoreManager} from '../account/keystore';
 import {FileSystemStorage} from '../account/fs-storage';
 import {initializeProviders} from '../api/api-registry';
@@ -206,10 +207,15 @@ function MainTabs() {
             const activeTab = tabState?.routes[tabState.index]?.name;
             // The Coins page (Dashboard) is the app's home; Back from it
             // closes the app rather than returning to a previous tab. An iOS
-            // app cannot quit itself, so there Back on the home page does nothing.
+            // app cannot quit itself, so there Back on the home page locks the
+            // wallet instead — the same thing auto-lock does — and the next
+            // person to pick up the phone meets the password screen.
             if (activeTab === 'WalletTab' && rootRoute?.name === 'Dashboard') {
               if (Platform.OS === 'android') {
                 BackHandler.exitApp();
+              } else {
+                useWalletStore.getState().clearWallet();
+                useAccountStore.getState().logout();
               }
               return;
             }

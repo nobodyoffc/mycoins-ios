@@ -142,5 +142,49 @@ final class WalkthroughTests: XCTestCase {
         snap("settings-lower")
         app.swipeUp()
         snap("settings-bottom")
+
+        // Back on the home page locks the wallet: the password screen again.
+        tap("Coins")
+        tap("Back")
+        expect("Login", "the login screen, after Back on Coins")
+        snap("locked")
+    }
+
+    /// A phrase must open the same wallet here as on Android, and without
+    /// the minute the JavaScript Argon2 took: derive a key from a known
+    /// phrase and check the FID that comes back, and how soon.
+    ///
+    /// The FID is what Android's JavaScript derives from this phrase
+    /// (`privateKeyFromSecret(phrase, 'argon2id')`, then the FCH address).
+    func testSecretKey() {
+        app.launch()
+        reachHome()
+        let chip = app.otherElements.matching(
+            NSPredicate(format: "label MATCHES %@", "^\\w{6}\\.\\.\\.\\w{6}$")
+        ).firstMatch
+        XCTAssertTrue(chip.waitForExistence(timeout: 10), "the FID chip")
+        chip.tap()
+        tap("+ Add Key")
+        tap("Secret")
+        snap("secret")
+        let phrase = app.textFields.firstMatch.exists ? app.textFields.firstMatch : app.textViews.firstMatch
+        XCTAssertTrue(phrase.waitForExistence(timeout: 5), "the phrase field")
+        phrase.tap()
+        phrase.typeText("walkthrough secret phrase")
+        snap("secret-typed")
+        app.swipeDown()
+        tap("Import Key")
+
+        let started = Date()
+        let alert = app.alerts.firstMatch
+        XCTAssertTrue(alert.waitForExistence(timeout: 20), "the key-added alert, within 20 s")
+        let took = Date().timeIntervalSince(started)
+        snap("secret-added")
+        let said = alert.staticTexts.allElementsBoundByIndex.map(\.label).joined(separator: " ")
+        XCTAssertTrue(
+            said.contains("FMnaDYK5tBDEGrLK6VRMpwhfd3zSAtYtw9"),
+            "the phrase's FID, as Android derives it; the alert said: \(said)"
+        )
+        print("ARGON2 derive-and-save took \(String(format: "%.1f", took)) s")
     }
 }
